@@ -24,9 +24,40 @@ const Arvore = sequelize.define('arvores', {
     type: DataTypes.TEXT,
     allowNull: false
   },
+  dt_plantio: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    validate: {
+      isBefore: new Date().toISOString(), // Garante que a data não seja futura
+    }
+  },
+  status: {
+    type: DataTypes.ENUM('Plantada', 'Vingou', 'Não Vingou', 'Produzindo'),
+    allowNull: true
+  },
   localizacao: {
     type: DataTypes.GEOMETRY('POINT'),
     allowNull: false
+  },
+  qt_extracoes: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0
+  },
+  vl_total_extracoes: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0
+  },
+  md_frutos: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0
+  },
+   md_tempo_extracoes: {
+    type: DataTypes.FLOAT, // Armazena a média em dias
+    allowNull: true,
+    defaultValue: null,
   },
   created_at: {
     type: DataTypes.DATE,
@@ -49,5 +80,6 @@ const Arvore = sequelize.define('arvores', {
   underscored: true,
   tableName: 'arvores'
 });
+
 
 module.exports = Arvore;

@@ -1,11 +1,20 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database');
+const Fazenda = require('./fazendas');
 
 const Usuario = sequelize.define('usuarios', {
   id: {
     type: DataTypes.BIGINT,
     primaryKey: true,
     autoIncrement: true
+  },
+  fazenda_id: {
+    type: DataTypes.BIGINT,
+    allowNull: false,
+    references: {
+      model: Fazenda,
+      key: 'id'
+    }
   },
   ds_tipo_documento: {
     type: DataTypes.ENUM('CPF', 'CNPJ'),
@@ -53,5 +62,6 @@ const Usuario = sequelize.define('usuarios', {
   underscored: true,
   tableName: 'usuarios'
 });
+
 
 module.exports = Usuario;

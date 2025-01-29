@@ -1,5 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database');
+const Usuario = require('./usuarios');
+const Fazenda = require('./fazendas');
 
 const Plantacao = sequelize.define('plantacoes', {
   id: {
@@ -7,11 +9,19 @@ const Plantacao = sequelize.define('plantacoes', {
     primaryKey: true,
     autoIncrement: true
   },
-  usuarios_id: {
+  fazenda_id: {
     type: DataTypes.BIGINT,
     allowNull: false,
     references: {
-      model: 'usuarios',
+      model: Fazenda,
+      key: 'id',
+    },
+  },
+  usuario_id: {
+    type: DataTypes.BIGINT,
+    allowNull: false,
+    references: {
+      model: Usuario,
       key: 'id'
     }
   },

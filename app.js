@@ -2,11 +2,12 @@ require('dotenv').config();
 const helmet = require('helmet');
 const cors = require('cors');
 const compression = require('compression');
-
+require('./models/associations');
 const express = require('express');
 const usuariosRoutes = require('./routes/usuariosRoutes');
 const plantacoesRoutes = require('./routes/plantacoesRoutes');
 const arvoresRoutes = require('./routes/arvoresRoutes');
+const fazendasRoutes = require('./routes/fazendaRoutes');
 const extracoesRoutes = require('./routes/extracoesRoutes');
 const autenticacaoRoutes = require('./routes/autenticacaoRouter');
 const sequelize = require('./database');
@@ -27,10 +28,12 @@ app.use('/usuarios', usuariosRoutes);
 app.use('/plantacoes', plantacoesRoutes);
 app.use('/arvores', arvoresRoutes);
 app.use('/extracoes', extracoesRoutes);
+app.use('/fazendas', fazendasRoutes);
 app.use('/autenticacao', autenticacaoRoutes);
 
-// Sincronizar modelos com o banco de dados
-sequelize.sync({ force: false })
+// Testar a conexão ao banco e iniciar o servidor
+sequelize
+  .authenticate()
   .then(() => {
     console.info('Conexão bem-sucedida com o banco de dados');
     // Iniciar o servidor
@@ -41,3 +44,4 @@ sequelize.sync({ force: false })
   .catch((error) => {
     console.error('Erro ao conectar ao banco de dados:', error);
   });
+

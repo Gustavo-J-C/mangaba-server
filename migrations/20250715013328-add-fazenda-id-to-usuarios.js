@@ -5,7 +5,7 @@ module.exports = {
    async up(queryInterface, Sequelize) {
     await queryInterface.addColumn('usuarios', 'fazenda_id', {
       type: Sequelize.BIGINT,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'fazendas',
         key: 'id'

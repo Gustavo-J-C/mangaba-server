@@ -43,14 +43,6 @@ module.exports = {
         primaryKey: true,
         autoIncrement: true,
       },
-      fazenda_id: {
-        type: Sequelize.BIGINT,
-        allowNull: false,
-        references: {
-          model: 'fazendas',
-          key: 'id',
-        },
-      },
       ds_tipo_documento: {
         type: Sequelize.ENUM('CPF', 'CNPJ'),
         allowNull: false,

@@ -193,40 +193,9 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: false
       },
-      dt_plantio: {
-        type: Sequelize.DATE,
-        allowNull: true,
-        validate: {
-          isBefore: new Date().toISOString(), // Garante que a data não seja futura
-        }
-      },
-      status: {
-        type: Sequelize.ENUM('Plantada', 'Vingou', 'Não Vingou', 'Produzindo'),
-        allowNull: true
-      },
       localizacao: {
         type: Sequelize.GEOMETRY('POINT'),
         allowNull: false
-      },
-      qt_extracoes: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        defaultValue: 0
-      },
-      vl_total_extracoes: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        defaultValue: 0
-      },
-      md_frutos: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        defaultValue: 0
-      },
-      md_tempo_extracoes: {
-        type: Sequelize.FLOAT, // Armazena a média em dias
-        allowNull: true,
-        defaultValue: null,
       },
       created_at: {
         type: Sequelize.DATE,

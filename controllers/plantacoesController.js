@@ -4,11 +4,16 @@ const Fazenda = require('../models/fazendas');
 const plantacoesController = {
   list: async (req, res) => {
     try {
+      const userId = req.user && req.user.userId;
+
       const { fazenda_id } = req.params;
 
       const { limit = 10, offset = 0 } = req.query;
 
-      const whereCondition = {};
+      const whereCondition = {
+        usuario_id: userId,
+        deleted_at: null
+      };
       if (fazenda_id) {
         whereCondition.fazenda_id = fazenda_id;
       }
@@ -41,7 +46,7 @@ const plantacoesController = {
       }
 
       const { fazenda_id, ds_nome, ds_descricao } = req.body;
-      if (!fazenda_id || !ds_nome || !ds_descricao) {
+      if ( !ds_nome || !ds_descricao) {
         return res.status(400).json({ error: 'Campos obrigatórios faltando' });
       }
 
@@ -87,13 +92,26 @@ const plantacoesController = {
 
   delete: async (req, res) => {
     const { id } = req.params;
-
+    console.log("Excluindo plantação com ID:", id);
+    
     try {
+      
       const userId = req.user && req.user.userId;
       if (!userId) {
         return res.status(401).json({ error: 'Usuário não autenticado' });
       }
 
+      console.log("Usuário autenticado com ID:", userId);
+      
+      const plantacao = await Plantacao.findOne({
+        where: { id, usuario_id: userId, deleted_at: null },
+      });
+      if (!plantacao) {
+        console.log("Plantação não encontrada ou não pertence ao usuário");
+        
+        return res.status(404).json({ error: 'Plantação não encontrada ou não pertence ao usuário' });
+      }
+      
       const deleted = await Plantacao.update(
         { deleted_at: new Date() },
         { where: { id, usuario_id: userId, deleted_at: null } }

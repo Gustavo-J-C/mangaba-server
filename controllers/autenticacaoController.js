@@ -197,6 +197,48 @@ const login = async function (req, res, next) {
   }
 };
 
+const editarPerfil = async (req, res) => {
+  try {
+    const { nome_completo: ds_nome_completo } = req.body;
+    const { userId } = req.user; // Assumindo que você tem middleware de autenticação que adiciona userId ao req
+    console.log(`Editando perfil do usuário com ID: ${userId}`);
+    
+    // Buscar usuário atual
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      console.log('Usuário não encontrado');
+      
+      return res.status(404).json({ message: 'Usuário não encontrado' });
+    }
+
+    // Validar se nome_completo foi fornecido
+    if (!ds_nome_completo || ds_nome_completo.trim() === '') {
+      return res.status(400).json({ message: 'Nome completo é obrigatório' });
+    }
+
+    // Atualizar apenas o nome completo (email e documento não podem ser alterados)
+    user.ds_nome_completo = ds_nome_completo.trim();
+    await user.save();
+
+    res.status(200).json({
+      message: 'Perfil atualizado com sucesso',
+      data: {
+        user: {
+          id: user.id,
+          nome_completo: user.ds_nome_completo,
+          email: user.ds_email,
+          documento: user.nu_documento,
+          tipo_documento: user.ds_tipo_documento
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Erro ao editar perfil:', error);
+    res.status(500).json({ message: 'Erro ao editar perfil' });
+  }
+};
+
 const refreshToken = async (req, res) => {
   const refresh_token = req.headers["refresh_token"] || "";
   if (!refresh_token) {
@@ -209,7 +251,8 @@ const refreshToken = async (req, res) => {
     if (!decodedRefreshToken) {
       return res.status(401).send({ message: "Invalid or expired refresh token" });
     }
-
+    console.log('decodedRefreshToken: ', decodedRefreshToken);
+    
     const user = await User.findByPk(decodedRefreshToken.userId);
 
     const { accessToken, refreshToken } = generateTokens(user);
@@ -257,6 +300,7 @@ module.exports = {
   generateTokens,
   verifyToken,
   login,
+  editarPerfil,
   registro,
   resetarSenha,
   refreshToken,

@@ -4,6 +4,7 @@ require('dotenv').config();
 const router = express.Router();
 
 const autenticacaoController = require('../controllers/autenticacaoController');
+const authenticateToken = require('../middlewares/authMiddleware');
 
 router.post('/login', autenticacaoController.login);
 
@@ -16,5 +17,7 @@ router.post('/verificar-codigo', autenticacaoController.validarCodigoVerificacao
 router.post('/refresh-token', autenticacaoController.refreshToken)
 
 router.post("/verify-token", autenticacaoController.verifyToken);
+
+router.put('/perfil/editar', authenticateToken, autenticacaoController.editarPerfil);
 
 module.exports = router;

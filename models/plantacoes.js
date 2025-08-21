@@ -11,7 +11,7 @@ const Plantacao = sequelize.define('plantacoes', {
   },
   fazenda_id: {
     type: DataTypes.BIGINT,
-    allowNull: false,
+    allowNull: true,
     references: {
       model: Fazenda,
       key: 'id',

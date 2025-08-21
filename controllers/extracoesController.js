@@ -24,7 +24,7 @@ const extracoesController = {
   
       // Atualizar os campos relacionados à árvore
       const novoVlTotalExtracoes = arvore.vl_total_extracoes + vl_volume;
-      const novasExtracoes = arvore.qt_extracoes ++;
+      const novasExtracoes = arvore.qt_extracoes++;
       const novaMediaFrutos = novoVlTotalExtracoes / novasExtracoes;
   
       // Atualizar os dados no banco

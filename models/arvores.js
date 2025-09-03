@@ -75,11 +75,11 @@ const Arvore = sequelize.define('arvores', {
     defaultValue: null
   }
 }, {
-  timestamps: false,
   paranoid: true,
   underscored: true,
   tableName: 'arvores'
 });
+
 
 
 module.exports = Arvore;

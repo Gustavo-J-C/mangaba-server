@@ -30,7 +30,7 @@ const Periodo = sequelize.define('periodos', {
     allowNull: true
   }
 }, {
-  timestamps: false,
+  paranoid: true,
   underscored: true,
   tableName: 'periodos'
 });

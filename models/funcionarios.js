@@ -42,7 +42,6 @@ const Funcionario = sequelize.define('funcionarios', {
     allowNull: true
   }
 }, {
-  timestamps: false,
   paranoid: true,
   underscored: true,
   tableName: 'funcionarios'

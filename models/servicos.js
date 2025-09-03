@@ -51,7 +51,6 @@ const Servico = sequelize.define('servicos', {
     allowNull: true
   }
 }, {
-  timestamps: false,
   paranoid: true,
   underscored: true,
   tableName: 'servicos'

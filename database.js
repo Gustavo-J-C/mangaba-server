@@ -9,6 +9,7 @@ const sequelize = new Sequelize(
       timestamps: true,
       underscored: true,
       createdAt: 'created_at',
+      deletedAt: 'deleted_at',
    }
 });
 

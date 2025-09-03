@@ -33,7 +33,6 @@ const Fazenda = sequelize.define('fazendas', {
     allowNull: true
   }
 }, {
-  timestamps: false,
   paranoid: true,
   underscored: true,
   tableName: 'fazendas'

@@ -57,7 +57,6 @@ const Usuario = sequelize.define('usuarios', {
     defaultValue: null
   }
 }, {
-  timestamps: false,
   paranoid: true,
   underscored: true,
   tableName: 'usuarios'

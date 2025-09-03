@@ -17,26 +17,14 @@ const extracoesController = {
     try {
       // Encontrar a árvore
       const arvore = await Arvore.findByPk(arvores_id);
-  
+
       if (!arvore) {
         return res.status(404).json({ error: 'Árvore não encontrada' });
       }
-  
-      // Atualizar os campos relacionados à árvore
-      const novoVlTotalExtracoes = arvore.vl_total_extracoes + vl_volume;
-      const novasExtracoes = arvore.qt_extracoes + 1;
-      const novaMediaFrutos = novoVlTotalExtracoes / novasExtracoes;
-  
-      // Atualizar os dados no banco
-      await arvore.update({
-        vl_total_extracoes: novoVlTotalExtracoes,
-        qt_extracoes: novasExtracoes,
-        md_frutos: novaMediaFrutos,
-      });
-  
+
       // Criar o registro de extração
       const extracao = await Extracao.create({ arvores_id, vl_volume });
-  
+
       // Retornar o registro da extração criada
       res.status(201).json(extracao);
     } catch (error) {
@@ -48,7 +36,7 @@ const extracoesController = {
   update: async (req, res) => {
     const { id } = req.params;
     const { vl_volume, created_at } = req.body;
-    
+
     try {
       const [updated] = await Extracao.update({ vl_volume, created_at }, {
         where: { id }
@@ -67,12 +55,13 @@ const extracoesController = {
   delete: async (req, res) => {
     const { id } = req.params;
     try {
-      const deleted = await Extracao.destroy({ where: { id } });
-      if (deleted) {
-        res.status(204).json({ message: 'Extração excluída com sucesso' });
-      } else {
-        res.status(404).json({ error: 'Extração não encontrada' });
+      const extracao = await Extracao.findByPk(id);
+      if (!extracao) {
+        return res.status(404).json({ error: 'Extração não encontrada' });
       }
+
+      await extracao.destroy(); // Soft delete na instância
+      res.status(204).json({ message: 'Extração excluída com sucesso' });
     } catch (error) {
       console.error('Erro ao excluir extração:', error);
       res.status(500).json({ error: 'Erro ao excluir extração' });

@@ -30,3 +30,5 @@ Servico.belongsTo(Fazenda, { foreignKey: 'fazenda_id', as: 'fazenda' });
 Servico.belongsTo(Funcionario, { foreignKey: 'funcionario_id', as: 'responsavel' });
 
 Usuario.belongsTo(Fazenda, { foreignKey: 'fazenda_id', as: 'fazenda' });
+
+

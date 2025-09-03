@@ -49,7 +49,6 @@ const Plantacao = sequelize.define('plantacoes', {
     defaultValue: null
   }
 }, {
-  timestamps: false,
   paranoid: true,
   underscored: true,
   tableName: 'plantacoes'

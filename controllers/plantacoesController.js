@@ -18,6 +18,8 @@ const plantacoesController = {
         whereCondition.fazenda_id = fazenda_id;
       }
 
+      console.log('Condição de busca:', whereCondition);
+      
       const plantacoes = await Plantacao.findAll({
         where: whereCondition,
         include: [
@@ -31,6 +33,8 @@ const plantacoesController = {
         offset: parseInt(offset, 10),
       });
 
+      console.log('Plantações encontradas:', plantacoes);
+      
       return res.json(plantacoes);
     } catch (error) {
       console.error('Erro ao listar plantações:', error);

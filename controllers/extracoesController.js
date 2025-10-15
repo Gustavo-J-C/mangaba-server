@@ -1,5 +1,6 @@
 const Arvore = require('../models/arvores');
 const Extracao = require('../models/extracoes');
+const Plantacao = require('../models/plantacoes');
 
 const extracoesController = {
   list: async (req, res) => {
@@ -17,26 +18,26 @@ const extracoesController = {
     try {
       // Encontrar a árvore
       const arvore = await Arvore.findByPk(arvores_id);
-  
+
       if (!arvore) {
         return res.status(404).json({ error: 'Árvore não encontrada' });
       }
-  
+
       // Atualizar os campos relacionados à árvore
       const novoVlTotalExtracoes = arvore.vl_total_extracoes + vl_volume;
       const novasExtracoes = arvore.extracoes + 1;
       const novaMediaFrutos = novoVlTotalExtracoes / novasExtracoes;
-  
+
       // Atualizar os dados no banco
       await arvore.update({
         vl_total_extracoes: novoVlTotalExtracoes,
         extracoes: novasExtracoes,
         md_frutos: novaMediaFrutos,
       });
-  
+
       // Criar o registro de extração
       const extracao = await Extracao.create({ arvores_id, vl_volume });
-  
+
       // Retornar o registro da extração criada
       res.status(201).json(extracao);
     } catch (error) {
@@ -48,7 +49,7 @@ const extracoesController = {
   update: async (req, res) => {
     const { id } = req.params;
     const { vl_volume, created_at } = req.body;
-    
+
     try {
       const [updated] = await Extracao.update({ vl_volume, created_at }, {
         where: { id }
@@ -102,6 +103,34 @@ const extracoesController = {
     } catch (error) {
       console.error('Erro ao buscar extração:', error);
       res.status(500).json({ error: 'Erro ao buscar extração' });
+    }
+  },
+  getExtracoesPorUsuario: async (request, response) => {
+    try {
+      const { usuarioId } = request.params;
+      const todasAsExtracoes = await Extracao.findAll({
+        include: [{
+          model: Arvore,
+          as: 'arvore', 
+          required: true,
+          attributes: [], 
+          include: [{
+            model: Plantacao,
+            as: 'plantacao', 
+            required: true,
+            attributes: [], 
+            where: {
+              usuario_id: usuarioId
+            }
+          }]
+        }]
+      });
+
+      return response.json(todasAsExtracoes);
+
+    } catch (error) {
+      console.error('Erro ao buscar todas as extrações do usuário:', error);
+      return response.status(500).json({ error: 'Erro interno do servidor' });
     }
   }
 };

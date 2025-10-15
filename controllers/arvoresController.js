@@ -1,4 +1,5 @@
 const Arvore = require('../models/arvores');
+const Plantacao = require('../models/plantacoes');
 const QRCode = require('qrcode');
 
 const arvoresController = {
@@ -155,7 +156,29 @@ const arvoresController = {
       console.error('Erro ao buscar a árvore:', error);
       res.status(500).json({ error: 'Erro ao buscar a árvore' });
     }
+  },
+  getArvoresPorUsuario: async (request, response) => {
+    try {
+      const { usuarioId } = request.params;
+      const todasAsArvores = await Arvore.findAll({
+        include: [{
+          model: Plantacao,
+          as: 'plantacao', 
+          required: true,
+          where: {
+            usuario_id: usuarioId
+          },
+          attributes: []
+        }]
+      });
+
+      return response.json(todasAsArvores);
+
+    } catch (error) {
+      console.error('Erro ao buscar todas as árvores do usuário:', error);
+      return response.status(500).json({ error: 'Erro interno do servidor' });
+    }
   }
-};
+}
 
 module.exports = arvoresController;

@@ -3,6 +3,7 @@ const router = express.Router();
 const extracoesController = require('../controllers/extracoesController');
 const authenticateToken = require('../middlewares/authMiddleware');
 
+router.get('/usuario/:usuarioId', authenticateToken, extracoesController.getExtracoesPorUsuario);
 router.get('/arvore/:arvores_id', extracoesController.findByArvore);
 router.get('/', extracoesController.list);
 router.get('/:id', extracoesController.findById);

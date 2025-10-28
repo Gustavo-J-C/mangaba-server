@@ -1,6 +1,7 @@
 const Arvore = require('../models/arvores');
 const Extracao = require('../models/extracoes');
 const Plantacao = require('../models/plantacoes');
+const Manutencao = require('../models/manutencoes');
 
 const extracoesController = {
   list: async (req, res) => {
@@ -15,6 +16,11 @@ const extracoesController = {
 
   create: async (req, res) => {
     const { arvores_id, vl_volume } = req.body;
+    const usuarioId = req.user && req.user.userId;
+
+    if (!usuarioId) {
+      return res.status(401).json({ error: 'Usuário não autenticado.' });
+    }
     try {
       // Encontrar a árvore
       const arvore = await Arvore.findByPk(arvores_id);
@@ -24,25 +30,38 @@ const extracoesController = {
       }
 
       // Atualizar os campos relacionados à árvore
-      const novoVlTotalExtracoes = arvore.vl_total_extracoes + vl_volume;
-      const novasExtracoes = arvore.extracoes + 1;
+      const novoVlTotalExtracoes = arvore.vl_total_extracoes + parseFloat(vl_volume);
+      const novasExtracoes = arvore.qt_extracoes + 1;
       const novaMediaFrutos = novoVlTotalExtracoes / novasExtracoes;
 
       // Atualizar os dados no banco
       await arvore.update({
         vl_total_extracoes: novoVlTotalExtracoes,
-        extracoes: novasExtracoes,
+        qt_extracoes: novasExtracoes,
         md_frutos: novaMediaFrutos,
       });
 
       // Criar o registro de extração
       const extracao = await Extracao.create({ arvores_id, vl_volume });
 
+      const dataExtracao = new Date();
+      const dataNotificacao = new Date();
+      // Define a data da notificação para 20 dias no futuro
+      dataNotificacao.setDate(dataExtracao.getDate() + 20);
+
+      //dataNotificacao.setMinutes(dataExtracao.getMinutes() + 1);
+
+      await Manutencao.create({
+        usuario_id: usuarioId,
+        arvores_id: arvores_id,
+        data_extracao: dataExtracao,
+        data_notificacao: dataNotificacao
+      });
       // Retornar o registro da extração criada
       res.status(201).json(extracao);
     } catch (error) {
-      console.error('Erro ao criar extração:', error);
-      res.status(500).json({ error: 'Erro ao criar extração' });
+      console.error('Erro ao criar extração e agendar manutenção:', error);
+      res.status(500).json({ error: 'Erro ao criar extração e agendar manutenção' });
     }
   },
 
@@ -111,14 +130,14 @@ const extracoesController = {
       const todasAsExtracoes = await Extracao.findAll({
         include: [{
           model: Arvore,
-          as: 'arvore', 
+          as: 'arvore',
           required: true,
-          attributes: [], 
+          attributes: [],
           include: [{
             model: Plantacao,
-            as: 'plantacao', 
+            as: 'plantacao',
             required: true,
-            attributes: [], 
+            attributes: [],
             where: {
               usuario_id: usuarioId
             }

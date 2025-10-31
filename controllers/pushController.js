@@ -1,9 +1,9 @@
 // Importa os models do seu arquivo central de associações
-const { DeviceToken } = require('../models'); 
+const { DeviceToken } = require('../models');
 
 exports.register = async (req, res) => {
   // Pegamos o ID do usuário que foi autenticado pelo middleware
-  const usuarioId = req.usuario.id; // <-- Verifique se é req.usuario.id ou req.userId
+  const usuarioId = req.user.userId;
   const { token } = req.body;
 
   if (!token) {

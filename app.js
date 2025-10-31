@@ -13,6 +13,7 @@ const pushRoutes = require('./routes/pushRoutes');
 const sequelize = require('./database');
 const morgan = require('morgan');
 const { iniciarScheduler } = require('./services/notificationScheduler');
+const manutencaoRoutes = require('./routes/manutencaoRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -31,7 +32,9 @@ app.use('/arvores', arvoresRoutes);
 app.use('/extracoes', extracoesRoutes);
 app.use('/fazendas', fazendasRoutes);
 app.use('/autenticacao', autenticacaoRoutes);
-app.use('/api/push', pushRoutes);
+app.use('/push', pushRoutes);
+app.use('/api/manutencao', manutencaoRoutes);
+
 
 // Testar a conexão ao banco e iniciar o servidor
 sequelize
@@ -48,16 +51,16 @@ sequelize
     console.error('Erro ao conectar ao banco de dados:', error);
   });
 
-// async function testConnection() {
-//     try {
-//         await sequelize.authenticate();
-//         console.log('✅ Conexão com o MySQL REMOTO (CloudClusters) estabelecida com sucesso!');
-//     } catch (error) {
-//         console.error('❌ ERRO ao conectar com o MySQL REMOTO:', error.message);
-//         // Aqui é onde você receberia um erro se o Firewall estivesse bloqueando ou as credenciais erradas
-//     }
-// }
+async function testConnection() {
+    try {
+        await sequelize.authenticate();
+        console.log('✅ Conexão com o MySQL REMOTO (CloudClusters) estabelecida com sucesso!');
+    } catch (error) {
+        console.error('❌ ERRO ao conectar com o MySQL REMOTO:', error.message);
+        // Aqui é onde você receberia um erro se o Firewall estivesse bloqueando ou as credenciais erradas
+    }
+}
 
-// testConnection();
+testConnection();
 
 module.exports = sequelize;;

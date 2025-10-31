@@ -240,20 +240,38 @@ const editarPerfil = async (req, res) => {
 };
 
 const refreshToken = async (req, res) => {
-  const refresh_token = req.headers["refresh_token"] || "";
+  // 1. Pegue o cabeçalho 'refresh_token'
+  const authHeader = req.headers["refresh_token"] || "";
+
+  // 2. Separe a palavra "Bearer" do token
+  const parts = authHeader.split(' ');
+
+  // 3. Verifique se o formato está correto
+  if (parts.length !== 2 || parts[0] !== 'Bearer') {
+    return res.status(401).json({ message: 'Refresh token mal formatado (esperado: "Bearer <token>")' });
+  }
+
+  // 4. Agora 'refresh_token' é *apenas* a string do token
+  const refresh_token = parts[1];
+
   if (!refresh_token) {
-    return res.status(401).send({ message: "Invalid refresh token" });
+    return res.status(401).send({ message: "Refresh token não fornecido" });
   }
 
   try {
+    // 5. Esta verificação agora funcionará
     const decodedRefreshToken = jwt.verify(refresh_token, process.env.JWT_REFRESH_KEY)
 
     if (!decodedRefreshToken) {
-      return res.status(401).send({ message: "Invalid or expired refresh token" });
+      return res.status(401).send({ message: "Token de atualização inválido ou expirado" });
     }
-    console.log('decodedRefreshToken: ', decodedRefreshToken);
     
     const user = await User.findByPk(decodedRefreshToken.userId);
+
+    // Se o usuário não for encontrado (ex: conta deletada), force o logout
+    if (!user) {
+        return res.status(404).send({ message: "Usuário não encontrado" });
+    }
 
     const { accessToken, refreshToken } = generateTokens(user);
 
@@ -261,9 +279,18 @@ const refreshToken = async (req, res) => {
       accessToken,
       refreshToken,
     });
+
   } catch (error) {
-    console.error(error);
-    return res.status(500).send({ message: error });
+    console.error('Erro ao renovar token:', error); // Log detalhado
+
+    // 6. [MELHORIA] Não retorne 500 para um token inválido. Retorne 401.
+    // Se o token expirou ou a assinatura é inválida, é um erro de autenticação.
+    if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+      return res.status(401).send({ message: "Refresh token inválido ou expirado", error: error.message });
+    }
+    
+    // Se for outro erro (ex: banco de dados), aí sim é 500
+    return res.status(500).send({ message: "Erro interno do servidor" });
   }
 };
 

@@ -14,6 +14,7 @@ const sequelize = require('./database');
 const morgan = require('morgan');
 const { iniciarScheduler } = require('./services/notificationScheduler');
 const manutencaoRoutes = require('./routes/manutencaoRoutes');
+const notificacaoRoutes = require('./routes/notificacaoRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -34,6 +35,7 @@ app.use('/fazendas', fazendasRoutes);
 app.use('/autenticacao', autenticacaoRoutes);
 app.use('/push', pushRoutes);
 app.use('/api/manutencao', manutencaoRoutes);
+app.use('/api/notificacoes', notificacaoRoutes);
 
 
 // Testar a conexão ao banco e iniciar o servidor
@@ -63,4 +65,4 @@ async function testConnection() {
 
 testConnection();
 
-module.exports = sequelize;;
+module.exports = sequelize;

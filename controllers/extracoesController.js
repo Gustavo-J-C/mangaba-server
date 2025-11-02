@@ -47,9 +47,9 @@ const extracoesController = {
       const dataExtracao = new Date();
       const dataNotificacao = new Date();
       // Define a data da notificação para 20 dias no futuro
-      //dataNotificacao.setDate(dataExtracao.getDate() + 20);
+      dataNotificacao.setDate(dataExtracao.getDate() + 20);
 
-      dataNotificacao.setMinutes(dataExtracao.getMinutes() + 1);
+      // dataNotificacao.setMinutes(dataExtracao.getMinutes() + 1);
 
       await Manutencao.create({
         usuario_id: usuarioId,

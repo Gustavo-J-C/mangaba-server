@@ -1,9 +1,9 @@
+require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/usuarios');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
-require('dotenv').config();
 
 const gerarCodigoVerificacao = () => {
   return crypto.randomBytes(3).toString('hex').toUpperCase();

@@ -8,6 +8,7 @@ const Servico = require("./servicos");
 const Usuario = require("./usuarios");
 const DeviceToken = require("./deviceTokens"); 
 const Manutencao = require("./manutencoes"); 
+const Notificacao = require('./notificacao');
 
 // --- ON DELETE CASCADE: Extracao e Manutencao dependem de Arvore ---
 Extracao.belongsTo(Arvore, { foreignKey: 'arvores_id', as: 'arvore', onDelete: 'CASCADE' });
@@ -56,5 +57,6 @@ module.exports = {
   Servico,
   Usuario,
   DeviceToken, 
-  Manutencao,  
+  Manutencao,
+  Notificacao,
 };

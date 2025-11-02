@@ -263,51 +263,6 @@ module.exports = {
         allowNull: true,
       },
     });
-
-    // Criar tabela periodos
-    // Mantendo a sua definição
-    await queryInterface.createTable('periodos', {
-      id: {
-        type: Sequelize.BIGINT,
-        primaryKey: true,
-        autoIncrement: true,
-      },
-      plantacoes_id: {
-        type: Sequelize.BIGINT,
-        allowNull: false,
-        references: {
-          model: 'plantacoes',
-          key: 'id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
-      },
-      tipo: {
-        type: Sequelize.STRING(255),
-        allowNull: false,
-        unique: true,
-      },
-      dt_inicio: {
-        type: Sequelize.DATE,
-        allowNull: true,
-      },
-      dt_fim: {
-        type: Sequelize.DATE,
-        allowNull: true,
-      },
-      // Periodos não tinha timestamps no seu código,
-      // mas é uma boa prática adicionar
-      created_at: {
-        type: Sequelize.DATE,
-        allowNull: false,
-        defaultValue: Sequelize.NOW,
-      },
-      updated_at: {
-        type: Sequelize.DATE,
-        allowNull: true,
-      },
-    });
-
     // Criar tabela extracoes
     await queryInterface.createTable('extracoes', {
       id: {
@@ -381,7 +336,7 @@ module.exports = {
           key: 'id',
         },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL', // Trocado para SET NULL para não perder o serviço
+        onDelete: 'SET NULL', 
       },
       created_at: {
         type: Sequelize.DATE,
@@ -400,7 +355,7 @@ module.exports = {
 
     // *** TABELAS FALTANTES ADICIONADAS ABAIXO ***
 
-    // 1. Criar tabela device_tokens (baseada no dump)
+    // 1. Criar tabela device_tokens 
     await queryInterface.createTable('device_tokens', {
       id: {
         type: Sequelize.BIGINT,
@@ -437,7 +392,7 @@ module.exports = {
       },
     });
 
-    // 2. Criar tabela manutencoes (baseada no dump)
+    // 2. Criar tabela manutencoes
     await queryInterface.createTable('manutencoes', {
       id: {
         type: Sequelize.BIGINT,
@@ -511,24 +466,24 @@ module.exports = {
       },
       arvore_id: {
         type: Sequelize.BIGINT,
-        allowNull: true, // Permite nulo
+        allowNull: true,
         references: {
           model: 'arvores',
           key: 'id',
         },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL', // Apagar a notificação se a árvore for deletada
+        onDelete: 'SET NULL',
       },
       titulo: {
         type: Sequelize.STRING(255),
         allowNull: false,
       },
       mensagem: {
-        type: Sequelize.TEXT('medium'), // mediumtext
+        type: Sequelize.TEXT('medium'), 
         allowNull: false,
       },
       lida: {
-        type: Sequelize.BOOLEAN, // tinyint(1)
+        type: Sequelize.BOOLEAN, 
         defaultValue: false,
       },
       tipo: {
@@ -565,7 +520,6 @@ module.exports = {
 
     await queryInterface.dropTable('servicos');
     await queryInterface.dropTable('extracoes');
-    await queryInterface.dropTable('periodos');
     await queryInterface.dropTable('arvores'); 
     await queryInterface.dropTable('plantacoes');
     await queryInterface.dropTable('funcionarios');
